@@ -100,14 +100,18 @@ struct TimePickerView: View {
     var enabled: Bool = true
     
     var body: some View {
-        VStack {
+        VStack(spacing: 2) {
             Button(action: {
-                if enabled && value < range.upperBound {
-                    value += 1
+                if enabled {
+                    let increment = label == "m" ? 10 : 1
+                    let newValue = value + increment
+                    value = min(newValue, range.upperBound)
                 }
             }) {
                 Image(systemName: "chevron.up")
                     .foregroundColor(.white)
+                    .frame(width: 40, height: 25)
+                    .contentShape(Rectangle())
             }
             .buttonStyle(.plain)
             .disabled(!enabled)
@@ -118,12 +122,16 @@ struct TimePickerView: View {
                 .frame(width: 40)
             
             Button(action: {
-                if enabled && value > range.lowerBound {
-                    value -= 1
+                if enabled {
+                    let decrement = label == "m" ? 10 : 1
+                    let newValue = value - decrement
+                    value = max(newValue, range.lowerBound)
                 }
             }) {
                 Image(systemName: "chevron.down")
                     .foregroundColor(.white)
+                    .frame(width: 40, height: 25)
+                    .contentShape(Rectangle())
             }
             .buttonStyle(.plain)
             .disabled(!enabled)
