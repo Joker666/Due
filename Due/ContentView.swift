@@ -27,6 +27,7 @@ struct ContentView: View {
                     .foregroundColor(.white)
                 TimePickerView(value: $viewModel.seconds, label: "s", range: 0...59, enabled: !viewModel.isRunning)
             }
+            .frame(height: 80) // Add fixed height for timer display
             
             // Controls and Options wrapped in opacity animation
             VStack(spacing: 15) {
@@ -74,19 +75,21 @@ struct ContentView: View {
                 .font(.caption)
             }
             .opacity(viewModel.isRunning ? (isHovering ? 1 : 0) : 1)
-            .frame(height: viewModel.isRunning ? (isHovering ? nil : 0) : nil)
+            .frame(height: viewModel.isRunning ? (isHovering ? 70 : 0) : 70) // Fixed height for controls
             .clipped()
-            .animation(.easeInOut(duration: 0.2), value: isHovering)
-            .animation(.easeInOut(duration: 0.2), value: viewModel.isRunning)
+            .animation(.smooth(duration: 0.3), value: isHovering)
+            .animation(.smooth(duration: 0.3), value: viewModel.isRunning)
         }
         .padding()
-        .padding([.top], -25)
+        .padding([.top], viewModel.isRunning ? (isHovering ? -25 : 0) : -25)
         .background(Color.black.opacity(0.01)) // Nearly invisible background for drag handling
-        .frame(maxWidth: .infinity)
+        .frame(width: 250)
         .fixedSize()
         .onHover { hovering in
             isHovering = hovering
         }
+        .animation(.smooth(duration: 0.3), value: isHovering)
+        .animation(.smooth(duration: 0.3), value: viewModel.isRunning)
     }
 }
 

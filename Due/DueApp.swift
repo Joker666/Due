@@ -10,14 +10,29 @@ import Combine
 import AppKit
 import UserNotifications
 
+struct WindowSizeKey: PreferenceKey {
+    static var defaultValue: CGSize = .zero
+    static func reduce(value: inout CGSize, nextValue: () -> CGSize) {
+        value = nextValue()
+    }
+}
+
 @main
 struct FloatingTimerApp: App {
     @NSApplicationDelegateAdaptor(AppDelegate.self) var appDelegate
+    @State private var windowSize: CGSize = CGSize(width: 250, height: 150)
     
     var body: some Scene {
         WindowGroup {
             ContentView()
-                .frame(width: 250, height: 150)
+                .background(GeometryReader { geometry in
+                    Color.clear.preference(key: WindowSizeKey.self, value: geometry.size)
+                })
+                .onPreferenceChange(WindowSizeKey.self) { newSize in
+                    if let window = NSApplication.shared.windows.first {
+                        window.setContentSize(newSize)
+                    }
+                }
         }
         .windowStyle(.hiddenTitleBar)
         .windowResizability(.contentSize)
